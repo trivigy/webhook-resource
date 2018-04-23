@@ -1,19 +1,20 @@
 package main
 
 import (
-	"flag"
-	"github.com/gorilla/mux"
-	"log"
-	"net/http"
-	"strings"
-	"io/ioutil"
-	"fmt"
-	"encoding/json"
-	"encoding/base64"
-	"net/url"
 	"bytes"
 	"crypto/tls"
+	"encoding/base64"
+	"encoding/json"
+	"flag"
+	"fmt"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"net/url"
+	"strings"
 	"time"
+
+	"github.com/gorilla/mux"
 )
 
 var (
@@ -48,11 +49,11 @@ type Version struct {
 }
 
 type Request struct {
-	Method  string     `json:"request"`
-	Path    string     `json:"path"`
-	Proto   string     `json:"proto"`
-	Headers [][]string `json:"headers"`
-	Body    []byte     `json:"body"`
+	Method  string     `json:"request,omitempty"`
+	Path    string     `json:"path,omitempty"`
+	Proto   string     `json:"proto,omitempty"`
+	Headers [][]string `json:"headers,omitempty"`
+	Body    []byte     `json:"body,omitempty"`
 }
 
 func header(r *http.Request, key string) (string, bool) {
@@ -99,7 +100,7 @@ func handleProxy(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	output, err := json.Marshal(Version{From{base64.StdEncoding.EncodeToString(ref)}})
+	encoded, err := json.Marshal(Version{From{"[$(ιοο)$]" + base64.StdEncoding.EncodeToString(ref)}})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -121,7 +122,7 @@ func handleProxy(w http.ResponseWriter, r *http.Request) {
 	http.DefaultTransport.(*http.Transport).TLSClientConfig =
 		&tls.Config{InsecureSkipVerify: *insecure}
 
-	req, err := http.NewRequest("POST", u.String(), bytes.NewBuffer(output))
+	req, err := http.NewRequest("POST", u.String(), bytes.NewBuffer(encoded))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
