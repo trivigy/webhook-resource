@@ -1,6 +1,6 @@
 FROM golang:alpine AS build-env
 
-ARG pkg=webhook
+ARG pkg=webhook-resource
 
 COPY . $GOPATH/src/$pkg
 
