@@ -54,6 +54,7 @@ type Request struct {
 	Proto   string     `json:"proto,omitempty"`
 	Headers [][]string `json:"headers,omitempty"`
 	Body    []byte     `json:"body,omitempty"`
+	Token   string     `json:"token,omitempty"`
 }
 
 func header(r *http.Request, key string) (string, bool) {
@@ -78,6 +79,7 @@ func handleProxy(w http.ResponseWriter, r *http.Request) {
 	request.Method = r.Method
 	request.Path = r.URL.String()
 	request.Proto = r.Proto
+	request.Token = *token
 
 	for name, headers := range r.Header {
 		name = strings.ToLower(name)
