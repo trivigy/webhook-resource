@@ -102,7 +102,7 @@ func handleProxy(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	encoded, err := json.Marshal(Version{From{"[$(ιοο)$]" + base64.StdEncoding.EncodeToString(ref)}})
+	encoded, err := json.Marshal(Version{From{base64.StdEncoding.EncodeToString(ref)}})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
